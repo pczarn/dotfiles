@@ -1,0 +1,12 @@
+[submodule "sublime2/User/Sublime-FASM-x86"]
+	path = sublime2/User/Sublime-FASM-x86
+	url = git@github.com:Shirk/Sublime-FASM-x86.git
+[submodule "sublime2/Package Control"]
+	path = sublime2/Package Control
+	url = git@github.com:wbond/sublime_package_control.git
+[submodule "sublime2/Sublimerge"]
+	path = sublime2/Sublimerge
+	url = git@github.com:borysf/Sublimerge.git
+[submodule "sublime2/SublimeREPL"]
+	path = sublime2/SublimeREPL
+	url = git@github.com:wuub/SublimeREPL.git

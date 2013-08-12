@@ -1,0 +1,10 @@
+[user]
+	email = pioczarn@gmail.com
+	name = Piotr Czarnecki
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	ui = true
+[push]
+	default = simple
