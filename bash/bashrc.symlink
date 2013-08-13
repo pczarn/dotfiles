@@ -41,4 +41,7 @@ function color_my_prompt {
     export PS1="$__location$__git_branch $__prompt_tail$__last_color "
 }
 
-color_my_prompt
+function prompt_command {
+  export PS1=$(~/.prompt)
+}
+export PROMPT_COMMAND=prompt_command
