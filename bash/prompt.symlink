@@ -12,17 +12,27 @@ local prompt = "\\[\27[1;34m\\]\\w"
 local branch = io.popen("git branch 2>/dev/null"):read()
 if branch ~= nil then
 	branch = branch:sub(3)
+	local repo = basename(io.popen("git rev-parse --show-toplevel"):read())
+	local rel_path = io.popen("git rev-parse --show-prefix"):read()
+	
+	prompt = "\\[\27[1m\\]" .. repo
 
-	--local repo = basename(io.popen("git rev-parse --show-toplevel"):read())
-	--prompt = io.popen("git rev-parse --show-prefix"):read()
-
-	if branch == "master" then
-		prompt = prompt .. "\\[\27[31m\\]*"
-	else
+	if branch ~= "master" then
 		prompt = prompt .. "\\[\27[m\\]:\\[\27[31m\\]" .. branch
 	end
-else
-	--prompt = "\\[\27[1;34m\\]\\w"
+
+	local staged_lines  = (io.popen("git diff --shortstat --staged"):read() or ''):match("%d+")
+	local changed_lines = (io.popen("git diff --shortstat"):read() or ''):match("%d+")
+
+	if staged_lines then
+		prompt = prompt .. "\\[\27[31m\\]+" .. staged_lines
+	elseif changed_lines then
+		prompt = prompt .. "\\[\27[31m\\]*" .. changed_lines
+	end
+
+	if rel_path ~= '' then
+		prompt = prompt .. "\\[\27[1;34m\\]/" .. rel_path
+	end
 end
 
 prompt = prompt .. " \\[\27[0m\\]"
