@@ -41,7 +41,15 @@ function color_my_prompt {
     export PS1="$__location$__git_branch $__prompt_tail$__last_color "
 }
 
+#color_my_prompt
 function prompt_command {
-  export PS1=$(~/.prompt)
+	pwd >> $PROMPT_DAEMON
+	read line <$PROMPT_DAEMON
+	export PS1="$line"
 }
+
+export PROMPT_DAEMON=`mktemp`
+mkfifo $PROMPT_DAEMON
 export PROMPT_COMMAND=prompt_command
+
+#nohup ~/.prompt $PROMPT_DAEMON 0<&- &>/dev/null &
