@@ -72,4 +72,21 @@ task :sublime do
    end
 end
 
+desc 'Link settings for Xfce 4.'
+task :xfce do
+   xfce_dir = "#{ENV['HOME']}/.config/xfce4"
+
+   Dir['xfce4/*'].each do |package|
+      target = File.join(File.dirname(__FILE__), package)
+      package_path = File.join(xfce_dir, File.basename(package))
+
+      if not File.symlink?(package_path)
+         if File.exists?(package_path)
+            FileUtils.mv package_path, "#{ package_path }.backup"
+         end
+         FileUtils.ln_s target, package_path
+      end
+   end
+end
+
 task :default => 'install'
