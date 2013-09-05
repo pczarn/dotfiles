@@ -5,6 +5,7 @@
 alias ls='ls --color=auto'
 alias grep='grep --color'
 alias rm='rm -I'
+alias ctl='sudo systemctl'
 
 alias pm='sudo pacman'
 alias pms='sudo pacman -S --color auto'
@@ -21,6 +22,8 @@ export PATH
 alias glog="git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
 alias gdiff="git diff"
 alias gdiffst="git diff --staged"
+
+complete -o default -o nospace -F _systemctl ctl
 
 export HISTFILESIZE=100000
 export HISTCONTROL=ignoredups
