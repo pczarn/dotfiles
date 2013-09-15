@@ -53,8 +53,12 @@ task :uninstall do
    end
 end
 
+task :submodule do
+   # init submodules
+end
+
 desc 'Link user settings and packages for Sublime Text 2.'
-task :sublime do
+task :sublime => :submodule do
    packages_dir = "#{ENV['HOME']}/.config/sublime-text-2/Packages"
 
    user_dir = File.join(packages_dir, 'User')
