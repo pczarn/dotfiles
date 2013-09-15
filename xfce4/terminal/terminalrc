@@ -15,7 +15,7 @@ MiscTabCloseButtons=TRUE
 MiscTabCloseMiddleClick=TRUE
 MiscTabPosition=GTK_POS_TOP
 MiscHighlightUrls=TRUE
-ScrollingLines=10000
+ScrollingLines=100000
 ScrollingOnOutput=FALSE
 TitleMode=TERMINAL_TITLE_PREPEND
 
