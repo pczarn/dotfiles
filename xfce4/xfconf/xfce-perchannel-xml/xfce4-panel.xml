@@ -28,6 +28,8 @@
         <value type="int" value="27"/>
         <value type="int" value="28"/>
         <value type="int" value="17"/>
+        <value type="int" value="18"/>
+        <value type="int" value="20"/>
         <value type="int" value="15"/>
         <value type="int" value="6"/>
         <value type="int" value="5"/>
@@ -90,6 +92,7 @@
         <value type="string" value="bitcoin-qt"/>
         <value type="string" value="dropbox"/>
         <value type="string" value="fluxgui.py"/>
+        <value type="string" value="liferea"/>
         <value type="string" value="gnome-mplayer"/>
       </property>
     </property>
@@ -189,6 +192,16 @@
     <property name="plugin-17" type="string" value="launcher">
       <property name="items" type="array">
         <value type="string" value="13776876741.desktop"/>
+      </property>
+    </property>
+    <property name="plugin-18" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="13815636831.desktop"/>
+      </property>
+    </property>
+    <property name="plugin-20" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="13834180851.desktop"/>
       </property>
     </property>
   </property>
