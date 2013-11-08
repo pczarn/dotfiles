@@ -13,7 +13,7 @@ local branch = io.popen("git rev-parse --abbrev-ref HEAD 2>/dev/null"):read()
 if branch ~= nil then
 	local repo = basename(io.popen("git rev-parse --show-toplevel"):read())
 	local rel_path = io.popen("git rev-parse --show-prefix"):read()
-	
+
 	prompt = "\\[\27[1m\\]" .. repo
 
 	if branch ~= "master" then
