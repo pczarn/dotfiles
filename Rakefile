@@ -57,6 +57,8 @@ end
 
 task :submodule do
    # init submodules
+   sh "git submodule update --init"
+   sh "git submodule -q foreach git pull -q origin master"
 end
 
 desc 'Link user settings and packages for Sublime Text 2.'
