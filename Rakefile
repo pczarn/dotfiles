@@ -1,78 +1,63 @@
 require 'rake'
 
-task :default => :install
+task :default => [:install, :vim]
 
-desc 'Hook our dotfiles into system-standard positions.'
+desc %(Hook our dotfiles into home directory)
 task :install do
-   Dir.glob('*/**{.dot.,.symlink}*') do |linkable|
-      dotfile linkable
-   end
+   dotfiles
 end
 
-desc 'Unlink dotfiles from system-standard positions.'
+desc %(Unlink dotfiles from home directory)
 task :uninstall do
-   Dir.glob('**/*.symlink*').each do |linkable|
-      file = linkable.split('/').last.sub('.symlink', '')
-      target = "#{ENV["HOME"]}/.#{file}"
+   dotfiles do |_, link_path|
+      link_name = File.basename(link_path)
 
       # Remove all symlinks created during installation
-      if File.symlink?(target)
-        FileUtils.rm(target)
+      if File.symlink?(link_path)
+        FileUtils.rm(link_path)
       end
 
       # Replace any backups made during installation
-      if File.exists?("#{ENV["HOME"]}/.#{file}.backup")
-        `mv "$HOME/.#{file}.backup" "$HOME/.#{file}"` 
+      backup = "#{ link_path }.backup"
+      if File.exists?(backup)
+         FileUtils.mv(backup, link_path)
       end
    end
 end
 
+desc %(Init submodules)
 task :submodule do
-   # init submodules
    sh "git submodule update --init"
 end
 
-task :submodule_pull do
-   # update submodules
+desc %(Update all submodules)
+task :pull do
    sh "git submodule -q foreach git pull -q origin master"
 end
 
 desc %(Link vim directory)
 task :vim => :submodule do
-   target = File.join(File.dirname(__FILE__), 'vim')
-   vim_dir = "#{ENV['HOME']}/.vim"
+   target  = File.join(File.dirname(__FILE__), 'vim')
+   vim_dir = File.join(ENV['HOME'], '.vim')
 
    symln target, vim_dir
-   symln File.join(target, 'pathogen/autoload'), File.join(target, 'autoload')
 end
 
-desc 'Link user settings and packages for Sublime Text 2.'
+desc %(Link user settings and packages for Sublime Text 2)
 task :sublime => :submodule do
-   packages_dir = "#{ENV['HOME']}/.config/sublime-text-2/Packages"
+   targets = Dir[File.join(File.dirname(__FILE__), 'sublime2/*')]
+   packages_dir = File.join(ENV['HOME'], ".config/sublime-text-2/Packages")
 
-   user_dir = File.join(packages_dir, 'User')
-   if not File.symlink?(user_dir)
-      FileUtils.mv user_dir, "#{ user_dir }.backup"
-   end
-
-   Dir.glob('sublime2/*') do |package|
-      target = File.join(File.dirname(__FILE__), package)
-      package_path = File.join(packages_dir, File.basename(package))
-
-      symln target, package_path
-   end
+   symln targets, packages_dir
 end
 
-desc 'Link settings for Xfce 4.'
+desc %(Link settings for Xfce 4)
 task :xfce do
-   xfce_dir = "#{ENV['HOME']}/.config/xfce4"
+   # use ln -s xfce4/* ~/.config/xfce4
+   targets = Dir[File.join(File.dirname(__FILE__), 'xfce4/*')]
+   xfce_dir = File.join(ENV['HOME'], "/.config/xfce4")
 
-   Dir.glob('xfce4/*') do |subdir|
-      target = File.join(File.dirname(__FILE__), subdir)
-      package_path = File.join(xfce_dir, File.basename(subdir))
-
-      symln target, package_path
-   end
+   symln targets, xfce_dir
 end
 
 DOT_EXT = %r{
@@ -80,29 +65,52 @@ DOT_EXT = %r{
    \.dot          # file.dot.txt => file.txt
 }x
 
-def dotfile(linkable)
-   target = File.join(File.dirname(__FILE__), linkable)
-   link_name = "#{ENV["HOME"]}/.#{ File.basename(target).sub(DOT_EXT, '') }"
+def dotfiles(path="*/**{.dot.,.symlink}*")
+   Dir.glob(path) do |dotfile|
+      link_target = File.join(File.dirname(__FILE__), dotfile)
+      link_path = "#{ENV["HOME"]}/.#{ File.basename(dotfile).sub(DOT_EXT, '') }"
 
-   symln target, link_name
+      if block_given?
+         yield link_target, link_path
+      else
+         symln link_target, link_path
+      end
+   end
 end
 
-def symln(target, link_name)
-   return if File.symlink?(link_name) && File.readlink(link_name) == target
+def symln(link_target, path)
+   if link_target.kind_of?(Array)
+      FileUtils.ln_s(
+         link_target.reject {|target|
+            interactive(target, File.join(path, File.basename(target)))
+         },
+         path
+      )
+   else
+      interactive(link_target, path)
+      FileUtils.ln_s(link_target, path) if not File.exists?(path)
+   end
+end
 
+def interactive(link_target, path)
    overwrite = false
    backup = false
+   link_name = File.basename(path)
 
-   if File.exists?(link_name) || File.symlink?(link_name)
-      puts "File already exists: #{link_name}, what do you want to do? [s]kip, [o]verwrite, [b]ackup"
+   if File.symlink?(path)
+      return true if File.readlink(path) == link_target
+      puts "Link already exists: #{link_name} => #{File.readlink(path)}. [s]kip, [o]verwrite"
+      if STDIN.gets.chomp == 'o'
+         FileUtils.rm_rf(path)
+      end
+   elsif File.exists?(path)
+      puts "File already exists: #{link_name}. [s]kip, [o]verwrite, [b]ackup"
       case STDIN.gets.chomp
       when 'o' then overwrite = true
       when 'b' then backup = true
       end
    
-      FileUtils.rm_rf(link_name) if overwrite
-      FileUtils.mv(link_name, "#{ link_name }.backup") if backup
+      FileUtils.rm_rf(path) if overwrite
+      FileUtils.mv(path, "#{ path }.backup") if backup
    end
-
-   FileUtils.ln_s target, link_name
 end

@@ -10,8 +10,8 @@ rake
 ```
 Install more configuration.
 ```bash
-rake vim sublime xfce
-rake pull
+rake sublime xfce
+rake pull # keep submodules updated
 ```
 
 ## components
