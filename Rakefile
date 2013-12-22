@@ -4,7 +4,7 @@ task :default => :install
 
 desc 'Hook our dotfiles into system-standard positions.'
 task :install do
-   Dir.glob('*/**{.symlink}*') do |linkable|
+   Dir.glob('*/**{.dot.,.symlink}*') do |linkable|
       dotfile linkable
    end
 end
@@ -75,9 +75,14 @@ task :xfce do
    end
 end
 
+DOT_EXT = %r{
+   \.symlink.* |  # script.symlink.sh => script
+   \.dot          # file.dot.txt => file.txt
+}x
+
 def dotfile(linkable)
    target = File.join(File.dirname(__FILE__), linkable)
-   link_name = "#{ENV["HOME"]}/.#{ File.basename(target).sub('.symlink', '') }"
+   link_name = "#{ENV["HOME"]}/.#{ File.basename(target).sub(DOT_EXT, '') }"
 
    symln target, link_name
 end
