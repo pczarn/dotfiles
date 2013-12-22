@@ -38,26 +38,5 @@ function src() {
     done
 }
 
-function color_my_prompt {
-    local __user_and_host="\[\033[01;32m\]\u"
-    local __location="\[\033[01;34m\]\w"
-    local __git_branch_color="\[\033[m\]:\[\033[31m\]"
-    local __git_branch='`git branch 2> /dev/null | grep -e ^* | sed -E s/^\\\\\*\ \(.+\)$/'"$__git_branch_color"'\\\\\1\/`'
-    local __prompt_tail="\[\033[35m\]$"
-    local __last_color="\[\033[00m\]"
-    export PS1="$__location$__git_branch $__prompt_tail$__last_color "
-}
-
-#color_my_prompt
-function prompt_command {
-	pwd >> $PROMPT_DAEMON
-	read line <$PROMPT_DAEMON
-	export PS1="$line"
-}
-
-export PROMPT_DAEMON=`mktemp`
-mkfifo $PROMPT_DAEMON
-export PROMPT_COMMAND=prompt_command
-
-#nohup ~/.prompt $PROMPT_DAEMON 0<&- &>/dev/null &
+export PROMPT_COMMAND='export PS1=$(~/.prompt.lua)'
 src
