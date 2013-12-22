@@ -68,6 +68,12 @@ task :xfce do
    symln targets, xfce_dir
 end
 
+desc %(Build Arch Linux image)
+task :archiso do
+   cd "archlive"
+   sh "sudo ./build.sh -v"
+end
+
 DOT_EXT = %r{
    \.symlink.* |  # script.symlink.sh => script
    \.dot          # file.dot.txt => file.txt
