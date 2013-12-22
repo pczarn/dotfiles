@@ -1,45 +1,17 @@
 require 'rake'
 
+task :default => :install
+
 desc 'Hook our dotfiles into system-standard positions.'
 task :install do
-   linkables = Dir.glob('*/**{.symlink}*')
-
-   skip_all = false
-   overwrite_all = false
-   backup_all = false
-
-   linkables.each do |linkable|
-      overwrite = false
-      backup = false
-   
-      file = linkable.split('/').last.sub('.symlink', '')
-      target = "#{ENV["HOME"]}/.#{file}"
-
-      next if File.symlink?(target) && File.readlink(target) == File.join(File.dirname(__FILE__), linkable)
-   
-      if File.exists?(target) || File.symlink?(target)
-         unless skip_all || overwrite_all || backup_all
-            puts "File already exists: #{target}, what do you want to do? [s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all"
-            case STDIN.gets.chomp
-            when 'o' then overwrite = true
-            when 'b' then backup = true
-            when 'O' then overwrite_all = true
-            when 'B' then backup_all = true
-            when 'S' then skip_all = true
-            end
-         end
-   
-         FileUtils.rm_rf(target) if overwrite || overwrite_all
-         `mv "$HOME/.#{file}" "$HOME/.#{file}.backup"` if backup || backup_all
-      end
-
-      `ln -s "$PWD/#{linkable}" "#{target}"`
+   Dir.glob('*/**{.symlink}*') do |linkable|
+      dotfile linkable
    end
 end
 
 desc 'Unlink dotfiles from system-standard positions.'
 task :uninstall do
-  Dir.glob('**/*.symlink*').each do |linkable|
+   Dir.glob('**/*.symlink*').each do |linkable|
       file = linkable.split('/').last.sub('.symlink', '')
       target = "#{ENV["HOME"]}/.#{file}"
 
@@ -58,7 +30,20 @@ end
 task :submodule do
    # init submodules
    sh "git submodule update --init"
+end
+
+task :submodule_pull do
+   # update submodules
    sh "git submodule -q foreach git pull -q origin master"
+end
+
+desc %(Link vim directory)
+task :vim => :submodule do
+   target = File.join(File.dirname(__FILE__), 'vim')
+   vim_dir = "#{ENV['HOME']}/.vim"
+
+   symln target, vim_dir
+   symln File.join(target, 'pathogen/autoload'), File.join(target, 'autoload')
 end
 
 desc 'Link user settings and packages for Sublime Text 2.'
@@ -70,13 +55,11 @@ task :sublime => :submodule do
       FileUtils.mv user_dir, "#{ user_dir }.backup"
    end
 
-   Dir['sublime2/*'].each do |package|
+   Dir.glob('sublime2/*') do |package|
       target = File.join(File.dirname(__FILE__), package)
       package_path = File.join(packages_dir, File.basename(package))
 
-      if not File.symlink?(package_path)
-         FileUtils.ln_s target, package_path
-      end
+      symln target, package_path
    end
 end
 
@@ -84,17 +67,37 @@ desc 'Link settings for Xfce 4.'
 task :xfce do
    xfce_dir = "#{ENV['HOME']}/.config/xfce4"
 
-   Dir['xfce4/*'].each do |package|
-      target = File.join(File.dirname(__FILE__), package)
-      package_path = File.join(xfce_dir, File.basename(package))
+   Dir.glob('xfce4/*') do |subdir|
+      target = File.join(File.dirname(__FILE__), subdir)
+      package_path = File.join(xfce_dir, File.basename(subdir))
 
-      if not File.symlink?(package_path)
-         if File.exists?(package_path)
-            FileUtils.mv package_path, "#{ package_path }.backup"
-         end
-         FileUtils.ln_s target, package_path
-      end
+      symln target, package_path
    end
 end
 
-task :default => 'install'
+def dotfile(linkable)
+   target = File.join(File.dirname(__FILE__), linkable)
+   link_name = "#{ENV["HOME"]}/.#{ File.basename(target).sub('.symlink', '') }"
+
+   symln target, link_name
+end
+
+def symln(target, link_name)
+   return if File.symlink?(link_name) && File.readlink(link_name) == target
+
+   overwrite = false
+   backup = false
+
+   if File.exists?(link_name) || File.symlink?(link_name)
+      puts "File already exists: #{link_name}, what do you want to do? [s]kip, [o]verwrite, [b]ackup"
+      case STDIN.gets.chomp
+      when 'o' then overwrite = true
+      when 'b' then backup = true
+      end
+   
+      FileUtils.rm_rf(link_name) if overwrite
+      FileUtils.mv(link_name, "#{ link_name }.backup") if backup
+   end
+
+   FileUtils.ln_s target, link_name
+end
