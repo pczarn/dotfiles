@@ -19,10 +19,6 @@ alias yuy='yaourt -Suy --aur --noconfirm'
 PATH="$HOME/.gem/ruby/2.0.0/bin:$HOME/.gem/ruby/1.9.3/bin:$PATH"
 export PATH
 
-alias glog="git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
-alias gdiff="git diff"
-alias gdiffst="git diff --staged"
-
 complete -o default -o nospace -F _systemctl ctl
 
 export HISTFILESIZE=100000
@@ -33,6 +29,14 @@ export EDITOR=nano
 export VISUAL=subl
 
 shopt -s checkwinsize
+
+# Source all files in ~/.sources/
+function src() {
+    local file
+    for file in ~/.sources/*; do
+        source "$file"
+    done
+}
 
 function color_my_prompt {
     local __user_and_host="\[\033[01;32m\]\u"
@@ -56,3 +60,4 @@ mkfifo $PROMPT_DAEMON
 export PROMPT_COMMAND=prompt_command
 
 #nohup ~/.prompt $PROMPT_DAEMON 0<&- &>/dev/null &
+src

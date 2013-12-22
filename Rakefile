@@ -3,7 +3,7 @@ require 'rake'
 task :default => [:install, :vim]
 
 desc %(Hook our dotfiles into home directory)
-task :install do
+task :install => :sources do
    dotfiles
 end
 
@@ -23,6 +23,14 @@ task :uninstall do
          FileUtils.mv(backup, link_path)
       end
    end
+end
+
+task :sources do
+   sources = Dir[File.join(File.dirname(__FILE__), '*/**.source.sh*')]
+   sources_dir = File.join(ENV["HOME"], '.sources')
+
+   FileUtils.mkdir_p sources_dir
+   symln sources, sources_dir
 end
 
 desc %(Init submodules)
