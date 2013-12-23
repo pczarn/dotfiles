@@ -1,42 +1,46 @@
 #!/usr/bin/env lua
 
+local posix = require"posix"
 require"lfs"
-
-local LUA_DIRSEP = string.sub(package.config, 1, 1)
-
-local basename = function(string_, suffix)
-    string_ = string_ or ''
-    return string.gsub(string_, '[^'.. LUA_DIRSEP ..']*'.. LUA_DIRSEP ..'', '')
-end
 
 local prompt = "\\[\27[1;34m\\]\\w"
 
-local branch = io.popen("git rev-parse --abbrev-ref HEAD 2>/dev/null"):read()
-if branch then
-    local repo = basename(io.popen("git rev-parse --show-toplevel"):read())
-    local rel_path = io.popen("git rev-parse --show-prefix"):read()
+local pwd = lfs.currentdir()
+local repo = pwd
+while repo:len() > 1 do
+    local attr = lfs.attributes(repo.."/.git")
+    if attr and attr.mode == "directory" then break end
+    repo = posix.dirname(repo)
+end
 
-    prompt = "\\[\27[1m\\]" .. repo
+if repo:len() > 1 then
+    local branch = io.open(repo.."/.git/HEAD"):read()
+    if branch:sub(1, 4) == "ref:" then
+        branch = branch:sub(17)
+    end
+
+    prompt = "\\[\27[1m\\]" .. posix.basename(repo)
 
     if branch ~= "master" then
         prompt = prompt .. "\\[\27[m\\]:\\[\27[31m\\]" .. branch
     end
 
-    local staged_lines  = (io.popen("git diff --shortstat --staged"):read() or ''):match("%d+")
-    local changed_lines = (io.popen("git diff --shortstat"):read() or ''):match("%d+")
-
+    local staged_lines  = io.popen("git diff --shortstat --staged"):read()
     if staged_lines then
-        prompt = prompt .. "\\[\27[31m\\]+" .. staged_lines
-    elseif changed_lines then
-        prompt = prompt .. "\\[\27[31m\\]*" .. changed_lines
+        prompt = prompt .. "\\[\27[31m\\]+" .. staged_lines:match("%d+")
+    else
+        local changed_lines = io.popen("git diff --shortstat"):read()
+        if changed_lines then
+            prompt = prompt .. "\\[\27[31m\\]*" .. changed_lines:match("%d+")
+        end
     end
 
-    if rel_path ~= '' then
-        prompt = prompt .. "\\[\27[1;34m\\]/" .. rel_path
+    if repo ~= pwd then
+        prompt = prompt .. "\\[\27[1;34m\\]" .. pwd:sub(repo:len() + 1)
     end
 end
 
-if lfs.currentdir() == os.getenv("HOME") then
+if pwd == os.getenv("HOME") then
     prompt = prompt .. " \\[\27[0m\\]"
 else
     prompt = prompt .. " \\[\27[0m\\]$ "
