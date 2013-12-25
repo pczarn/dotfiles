@@ -15,6 +15,8 @@ rake pull # keep submodules updated
 ```
 
 ## components
+### archiso: building Arch Linux
+
 ### bash prompt
 ![](http://i.imgur.com/L8ZF5Sq.png)
 

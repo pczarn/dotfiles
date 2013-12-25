@@ -30,33 +30,33 @@ task :sources do
    sources_dir = File.join(ENV["HOME"], '.sources')
 
    FileUtils.mkdir_p sources_dir
-   symln sources, sources_dir
+   install_ln sources, sources_dir
 end
 
 desc %(Init submodules)
 task :submodule do
-   sh "git submodule update --init"
+   system "git submodule update --init"
 end
 
 desc %(Update all submodules)
 task :pull do
-   sh "git submodule -q foreach git pull -q origin master"
+   system "git submodule -q foreach git pull -q origin master"
 end
 
 desc %(Link vim directory)
-task :vim => :submodule do
+task :vim => 'git:init' do
    target  = File.join(File.dirname(__FILE__), 'vim')
    vim_dir = File.join(ENV['HOME'], '.vim')
 
-   symln target, vim_dir
+   install_ln target, vim_dir
 end
 
 desc %(Link user settings and packages for Sublime Text 2)
-task :sublime => :submodule do
+task :sublime => 'git:init' do
    targets = Dir[File.join(File.dirname(__FILE__), 'sublime2/*')]
    packages_dir = File.join(ENV['HOME'], ".config/sublime-text-2/Packages")
 
-   symln targets, packages_dir
+   install_ln targets, packages_dir
 end
 
 desc %(Link settings for Xfce 4)
@@ -65,13 +65,50 @@ task :xfce do
    targets = Dir[File.join(File.dirname(__FILE__), 'xfce4/*')]
    xfce_dir = File.join(ENV['HOME'], "/.config/xfce4")
 
-   symln targets, xfce_dir
+   install_ln targets, xfce_dir
 end
 
 desc %(Build Arch Linux image)
 task :archiso do
    cd "archlive"
    sh "sudo ./build.sh -v"
+end
+
+namespace :git do
+   desc %(Init submodules)
+   task :init do
+      system "git submodule update --init"
+   end
+
+   desc %(Update all submodules)
+   task :pull do
+      system "git submodule -q foreach git pull -q origin master"
+   end
+end
+
+namespace :vim do |args|
+   desc %(Install vim plugin)
+   task :plugin do
+      url = ARGV[1].strip
+      plugin_name = url[%r(/([^/]+)\.git\Z), 1]
+
+      if plugin_name.nil?
+         if plugin_name = url[%r(\A[^/]+/([^/]+)\Z), 1]
+            url = "https://github.com/#{ url }.git"
+         else
+            fail "Invalid plugin location"
+         end
+      end
+
+      dest = "vim/bundle/#{plugin_name}"
+      if File.exists?(dest)
+         puts "Plugin already installed"
+      else
+         system "git submodule add #{url} #{dest}"
+         Rake::Task['git:init'].invoke
+      end
+      exit
+   end
 end
 
 DOT_EXT = %r{
@@ -87,12 +124,12 @@ def dotfiles(path="*/**{.dot.,.symlink}*")
       if block_given?
          yield link_target, link_path
       else
-         symln link_target, link_path
+         install_ln link_target, link_path
       end
    end
 end
 
-def symln(link_target, path)
+def install_ln(link_target, path)
    if link_target.kind_of?(Array)
       FileUtils.ln_s(
          link_target.reject {|target|
