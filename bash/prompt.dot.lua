@@ -7,14 +7,23 @@ local prompt = "\\[\27[1;34m\\]\\w"
 
 local pwd = lfs.currentdir()
 local repo = pwd
+local branch
 while repo:len() > 1 do
     local attr = lfs.attributes(repo.."/.git")
-    if attr and attr.mode == "directory" then break end
+    if attr then
+        if attr.mode == "directory" then
+            branch = io.open(repo.."/.git/HEAD"):read()
+        elseif attr.mode == "file" then
+            -- submodule
+            repo = repo .. "/" .. io.open(repo.."/.git"):read():match("gitdir: (.+)")
+            branch = "master"
+        end
+        break
+    end
     repo = posix.dirname(repo)
 end
 
-if repo:len() > 1 then
-    local branch = io.open(repo.."/.git/HEAD"):read()
+if branch then
     if branch:sub(1, 4) == "ref:" then
         branch = branch:sub(17)
     end
