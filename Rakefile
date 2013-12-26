@@ -90,7 +90,7 @@ namespace :vim do |args|
    desc %(Install vim plugin)
    task :plugin do
       url = ARGV[1].strip
-      plugin_name = url[%r(/([^/]+)\.git\Z), 1]
+      plugin_name = ARGV[2] || url[%r(/([^/]+)\.git\Z), 1]
 
       if plugin_name.nil?
          if plugin_name = url[%r(\A[^/]+/([^/]+)\Z), 1]
@@ -100,7 +100,7 @@ namespace :vim do |args|
          end
       end
 
-      dest = "vim/bundle/#{plugin_name}"
+      dest = "vim/bundle/#{plugin_name.strip}"
       if File.exists?(dest)
          puts "Plugin already installed"
       else
