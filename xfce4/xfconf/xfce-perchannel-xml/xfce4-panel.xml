@@ -11,7 +11,7 @@
       <property name="position-locked" type="bool" value="true"/>
       <property name="size" type="uint" value="34"/>
       <property name="plugin-ids" type="array">
-        <value type="int" value="1"/>
+        <value type="int" value="29"/>
         <value type="int" value="19"/>
         <value type="int" value="16"/>
         <value type="int" value="12"/>
@@ -31,6 +31,7 @@
         <value type="int" value="18"/>
         <value type="int" value="20"/>
         <value type="int" value="15"/>
+        <value type="int" value="30"/>
         <value type="int" value="6"/>
         <value type="int" value="5"/>
         <value type="int" value="2"/>
@@ -84,6 +85,7 @@
       <property name="names-visible" type="array">
         <value type="string" value="thunar"/>
         <value type="string" value="vlc"/>
+        <value type="string" value="redshift-gtk"/>
         <value type="string" value="systray icon"/>
         <value type="string" value="networkmanager applet"/>
         <value type="string" value="task manager"/>
@@ -204,5 +206,7 @@
         <value type="string" value="13834180851.desktop"/>
       </property>
     </property>
+    <property name="plugin-30" type="string" value="systemload"/>
+    <property name="plugin-29" type="string" value="whiskermenu"/>
   </property>
 </channel>
