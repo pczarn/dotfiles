@@ -26,7 +26,7 @@ export HISTCONTROL=ignoredups
 HISTTIMEFORMAT="[%d/%m/%y %T] "
 
 export EDITOR=nano
-export VISUAL=subl
+export VISUAL=vim
 
 shopt -s checkwinsize
 
