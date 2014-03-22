@@ -28,6 +28,8 @@ HISTTIMEFORMAT="[%d/%m/%y %T] "
 export EDITOR=nano
 export VISUAL=vim
 
+export CHROMIUM_USER_FLAGS=--enable-print-preview
+
 shopt -s checkwinsize
 
 # Source all files in ~/.sources/
