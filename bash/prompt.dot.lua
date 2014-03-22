@@ -49,6 +49,11 @@ if branch then
     end
 end
 
+local rvm = os.getenv("RUBY_VERSION")
+if rvm then
+    prompt = prompt .. " \\[\27[0;37m\\]" .. rvm
+end
+
 if pwd == os.getenv("HOME") then
     prompt = prompt .. " \\[\27[0m\\]"
 else

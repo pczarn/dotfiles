@@ -5,6 +5,7 @@ task :default => [:install, :vim]
 desc %(Hook our dotfiles into home directory)
 task :install => :sources do
    dotfiles
+   dotfiles('bin', '')
 end
 
 desc %(Unlink dotfiles from home directory)
@@ -116,10 +117,10 @@ DOT_EXT = %r{
    \.dot          # file.dot.txt => file.txt
 }x
 
-def dotfiles(path="*/**{.dot.,.symlink}*")
+def dotfiles(path="*/**{.dot.,.symlink}*", prefix=".")
    Dir.glob(path) do |dotfile|
       link_target = File.join(File.dirname(__FILE__), dotfile)
-      link_path = "#{ENV["HOME"]}/.#{ File.basename(dotfile).sub(DOT_EXT, '') }"
+      link_path = "#{ENV["HOME"]}/#{ prefix }#{ File.basename(dotfile).sub(DOT_EXT, '') }"
 
       if block_given?
          yield link_target, link_path

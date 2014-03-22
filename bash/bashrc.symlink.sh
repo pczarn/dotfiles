@@ -42,3 +42,8 @@ function src() {
 
 export PROMPT_COMMAND='export PS1=$(~/.prompt.lua)'
 src
+
+
+PATH=$PATH:$HOME/bin:$HOME/.rvm/bin # Add RVM to PATH for scripting
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+[[ -r "$HOME/.rvm/scripts/completion" ]] && source "$HOME/.rvm/scripts/completion"
