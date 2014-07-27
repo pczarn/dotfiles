@@ -43,6 +43,9 @@ function src() {
 export PROMPT_COMMAND='export PS1=$(~/.prompt.lua)'
 src
 
+LD_LIBRARY_PATH=$HOME/Desktop/rust/x86_64-unknown-linux-gnu/stage1/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
+
 
 PATH=$PATH:$HOME/bin:$HOME/.rvm/bin # Add RVM to PATH for scripting
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
