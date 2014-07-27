@@ -46,7 +46,9 @@ src
 LD_LIBRARY_PATH=$HOME/Desktop/rust/x86_64-unknown-linux-gnu/stage1/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH
 
+# Add RVM to PATH for scripting
+PATH=$HOME/.gem/ruby/2.0.0/bin:$HOME/.gem/ruby/1.9.3/bin:$PATH:$HOME/bin:$HOME/.rvm/bin
+export PATH
 
-PATH=$PATH:$HOME/bin:$HOME/.rvm/bin # Add RVM to PATH for scripting
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 [[ -r "$HOME/.rvm/scripts/completion" ]] && source "$HOME/.rvm/scripts/completion"
