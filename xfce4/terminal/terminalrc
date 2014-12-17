@@ -18,4 +18,5 @@ MiscHighlightUrls=TRUE
 ScrollingLines=100000
 ScrollingOnOutput=FALSE
 TitleMode=TERMINAL_TITLE_PREPEND
+FontName=DejaVu Sans Mono 11
 

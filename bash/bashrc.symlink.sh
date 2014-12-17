@@ -6,6 +6,7 @@ alias ls='ls --color=auto'
 alias grep='grep --color'
 alias rm='rm -I'
 alias ctl='sudo systemctl'
+alias tmux='tmux -2'
 
 alias pm='sudo pacman'
 alias pms='sudo pacman -S --color auto'
@@ -16,17 +17,23 @@ alias yas='yaourt -S'
 alias yass='yaourt -Ss'
 alias yuy='yaourt -Suy --aur --noconfirm'
 
+_completion_loader systemctl
+complete -o default -o nospace -F _systemctl systemctl ctl
+
+_completion_loader pacman
+complete -o default -o nospace -F _pacman pm
 PATH="$HOME/.gem/ruby/2.0.0/bin:$HOME/.gem/ruby/1.9.3/bin:$PATH"
 export PATH
 
-complete -o default -o nospace -F _systemctl ctl
+export TERM=xterm-256color
 
 export HISTFILESIZE=100000
 export HISTCONTROL=ignoredups
 HISTTIMEFORMAT="[%d/%m/%y %T] "
 
-export EDITOR=nano
-export VISUAL=vim
+# Sorry, nano
+export EDITOR=vim
+export VISUAL=$EDITOR
 
 export CHROMIUM_USER_FLAGS=--enable-print-preview
 
