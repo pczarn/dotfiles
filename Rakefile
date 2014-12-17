@@ -6,6 +6,7 @@ desc %(Hook our dotfiles into home directory)
 task :install => :sources do
    dotfiles
    dotfiles('bin', '')
+   dotfiles('weechat')
 end
 
 desc %(Unlink dotfiles from home directory)
