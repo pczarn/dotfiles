@@ -1,1 +1,38 @@
-/home/piotr/Desktop/dotfiles/git/gitconfig.symlink
+[user]
+  email = pioczarn@gmail.com
+  name  = Piotr Czarnecki
+	signingkey = 00EF93D39FB0E462
+[color]
+  diff = auto
+  status = auto
+  branch = auto
+  ui = true
+[push]
+  default = simple
+[alias]
+  it = commit
+  co   = checkout
+  br = branch
+  re = rebase
+  l = log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+  st = status
+  sm   = submodule
+  smu  = submodule foreach git pull origin master
+  glog = log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+  hist = log --graph --pretty=format:'%Cred%h%Creset %C(bold blue)<%an>%Creset%C(yellow)%d%Creset %Cgreen(%cr)%Creset%n%w(80,8,8)%s'
+	br = branch
+	di = difftool
+[gui]
+	recentrepo = /home/piotr/Desktop/liballoy
+	recentrepo = /home/piotr/Desktop/src/rust-iter
+	recentrepo = /home/piotr/Desktop/ruruby
+	recentrepo = /home/piotr/Desktop/rust-marpa
+	gcwarning = false
+	recentrepo = /home/piotr/Desktop/src/rust
+	recentrepo = /home/piotr/Desktop/src/hashmap2
+[merge]
+	tool = meld
+[diff]
+	tool = vimdiff
+[difftool]
+	prompt = false
