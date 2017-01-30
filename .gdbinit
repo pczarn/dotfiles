@@ -1,0 +1,1 @@
+/home/piotr/Desktop/dotfiles/gdb/gdbinit.symlink

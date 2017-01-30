@@ -1,0 +1,1 @@
+/home/piotr/Desktop/dotfiles/vim/vimrc.symlink.vim

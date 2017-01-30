@@ -1,0 +1,18 @@
+"*":
+  core:
+    autoHideMenuBar: true
+    packagesWithKeymapsDisabled: [
+      "last-cursor-position"
+    ]
+    telemetryConsent: "no"
+  editor:
+    preferredLineLength: 100
+  "exception-reporting":
+    userId: "5d294d8a-0933-02ad-068c-381419486e0a"
+  linter:
+    showErrorPanel: false
+  racer:
+    racerBinPath: "/home/piotr/.cargo/bin/racer"
+    rustSrcPath: "/home/piotr/Desktop/src/rust/src/"
+  welcome:
+    showOnStartup: false

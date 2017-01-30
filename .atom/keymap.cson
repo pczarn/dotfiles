@@ -1,0 +1,6 @@
+'atom-workspace':
+  'alt-left': 'last-cursor-position:previous'
+  'alt-right': 'last-cursor-position:next'
+'atom-workspace atom-text-editor':
+  'alt-left': 'last-cursor-position:previous'
+  'alt-right': 'last-cursor-position:next'
